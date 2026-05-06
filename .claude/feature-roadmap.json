@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json.schemastore.org/feature-roadmap.json",
+  "version": "1.0",
+  "project": "apollo-ru",
+  "updated_at": "2026-05-06",
+  "scope": {
+    "mvp": ["P0"],
+    "all": ["P0", "P1", "P2"]
+  },
+  "features": [
+    {
+      "id": "user-auth",
+      "title": "User authentication (register, login, JWT, verify, reset)",
+      "priority": "P0",
+      "sprint": 1,
+      "status": "next",
+      "estimated_hours": 8,
+      "depends_on": [],
+      "blocks": ["company-search", "reveal-with-quota", "billing-plans", "audit-log", "team-seats"],
+      "files_touched": [
+        "backend-api/app/routers/auth.py",
+        "backend-api/app/services/auth.py",
+        "backend-api/app/repositories/user.py",
+        "backend-api/app/models/user.py",
+        "backend-api/app/utils/jwt.py",
+        "backend-api/alembic/versions/0001_init_users.py",
+        "frontend/app/(auth)/register/page.tsx",
+        "frontend/app/(auth)/login/page.tsx",
+        "frontend/app/(auth)/verify/page.tsx",
+        "frontend/app/(auth)/reset-password/page.tsx",
+        "frontend/lib/api/auth.ts",
+        "frontend/middleware.ts"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-1"
+    },
+    {
+      "id": "company-search",
+      "title": "Company search with filters (ОКВЭД, region, employees, revenue)",
+      "priority": "P0",
+      "sprint": 1,
+      "status": "planned",
+      "estimated_hours": 6,
+      "depends_on": ["user-auth"],
+      "blocks": ["company-card", "csv-export-basic"],
+      "files_touched": [
+        "backend-api/app/routers/companies.py",
+        "backend-api/app/services/company.py",
+        "backend-api/app/repositories/company.py",
+        "backend-api/app/models/company.py",
+        "backend-api/alembic/versions/0002_init_companies.py",
+        "frontend/app/(dashboard)/page.tsx",
+        "frontend/components/companies/SearchFilters.tsx",
+        "frontend/components/companies/CompanyTable.tsx",
+        "frontend/lib/api/companies.ts"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-2"
+    },
+    {
+      "id": "company-card",
+      "title": "Company detail card view",
+      "priority": "P0",
+      "sprint": 1,
+      "status": "planned",
+      "estimated_hours": 3,
+      "depends_on": ["company-search"],
+      "blocks": ["reveal-with-quota"],
+      "files_touched": [
+        "backend-api/app/routers/companies.py",
+        "frontend/app/(dashboard)/companies/[inn]/page.tsx",
+        "frontend/components/companies/CompanyCard.tsx",
+        "frontend/components/companies/ContactList.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-3.1"
+    },
+    {
+      "id": "csv-export-basic",
+      "title": "CSV export of search results (Free + Starter tier)",
+      "priority": "P0",
+      "sprint": 1,
+      "status": "planned",
+      "estimated_hours": 3,
+      "depends_on": ["company-search"],
+      "blocks": ["csv-export-pro"],
+      "files_touched": [
+        "backend-api/app/routers/companies.py",
+        "backend-api/app/services/export.py",
+        "frontend/components/companies/ExportButton.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-4"
+    },
+    {
+      "id": "audit-log",
+      "title": "Audit log infrastructure (152-ФЗ compliance)",
+      "priority": "P0",
+      "sprint": 2,
+      "status": "planned",
+      "estimated_hours": 6,
+      "depends_on": ["user-auth"],
+      "blocks": ["reveal-with-quota", "billing-plans", "telegram-outreach-mvp"],
+      "files_touched": [
+        "backend-api/app/services/audit.py",
+        "backend-api/app/repositories/audit.py",
+        "backend-api/app/models/audit_log.py",
+        "backend-api/alembic/versions/0003_audit_log_partitioned.py",
+        "backend-api/app/utils/logging.py"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-8"
+    },
+    {
+      "id": "reveal-with-quota",
+      "title": "Atomic reveal contact with credit deduction",
+      "priority": "P0",
+      "sprint": 2,
+      "status": "planned",
+      "estimated_hours": 8,
+      "depends_on": ["company-card", "audit-log", "billing-plans"],
+      "blocks": ["telegram-outreach-mvp"],
+      "files_touched": [
+        "backend-api/app/routers/reveals.py",
+        "backend-api/app/services/reveal.py",
+        "backend-api/app/repositories/reveal_event.py",
+        "backend-api/app/repositories/subscription.py",
+        "backend-api/app/models/reveal_event.py",
+        "backend-api/alembic/versions/0004_reveal_events.py",
+        "frontend/components/companies/RevealButton.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-3"
+    },
+    {
+      "id": "csv-export-pro",
+      "title": "CSV export with revealed contacts (Pro+)",
+      "priority": "P1",
+      "sprint": 2,
+      "status": "planned",
+      "estimated_hours": 4,
+      "depends_on": ["csv-export-basic", "reveal-with-quota"],
+      "blocks": [],
+      "files_touched": [
+        "backend-api/app/services/export.py",
+        "backend-api/app/routers/companies.py"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-4.1"
+    },
+    {
+      "id": "billing-plans",
+      "title": "Subscription tiers (Free/Starter/Pro/Team/Enterprise) and quotas",
+      "priority": "P0",
+      "sprint": 3,
+      "status": "planned",
+      "estimated_hours": 5,
+      "depends_on": ["user-auth"],
+      "blocks": ["reveal-with-quota", "billing-yookassa", "team-seats"],
+      "files_touched": [
+        "backend-api/app/models/plan.py",
+        "backend-api/app/models/subscription.py",
+        "backend-api/app/services/billing.py",
+        "backend-api/app/repositories/subscription.py",
+        "backend-api/alembic/versions/0005_billing_tables.py",
+        "backend-api/app/scripts/seed_plans.py",
+        "frontend/app/(dashboard)/billing/page.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-7.1"
+    },
+    {
+      "id": "billing-yookassa",
+      "title": "ЮKassa integration (checkout + webhook + auto-renewal)",
+      "priority": "P0",
+      "sprint": 3,
+      "status": "planned",
+      "estimated_hours": 8,
+      "depends_on": ["billing-plans", "audit-log"],
+      "blocks": ["quota-reset"],
+      "files_touched": [
+        "backend-api/app/integrations/yookassa.py",
+        "backend-api/app/routers/billing.py",
+        "backend-api/app/services/billing.py",
+        "frontend/components/billing/CheckoutButton.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-7.2"
+    },
+    {
+      "id": "quota-reset",
+      "title": "Monthly quota reset via Celery Beat (cron)",
+      "priority": "P0",
+      "sprint": 3,
+      "status": "planned",
+      "estimated_hours": 3,
+      "depends_on": ["billing-yookassa"],
+      "blocks": [],
+      "files_touched": [
+        "worker/app/tasks/billing.py",
+        "worker/app/celery.py"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-7.3"
+    },
+    {
+      "id": "telegram-outreach-mvp",
+      "title": "Telegram outreach campaigns (templates, throttle, opt-out)",
+      "priority": "P0",
+      "sprint": 4,
+      "status": "planned",
+      "estimated_hours": 10,
+      "depends_on": ["reveal-with-quota", "audit-log"],
+      "blocks": ["outreach-personalize", "opt-out-flow"],
+      "files_touched": [
+        "backend-api/app/routers/campaigns.py",
+        "backend-api/app/services/campaign.py",
+        "backend-api/app/models/campaign.py",
+        "backend-api/app/integrations/telegram.py",
+        "backend-api/alembic/versions/0006_campaigns.py",
+        "worker/app/tasks/outreach.py",
+        "frontend/app/(dashboard)/campaigns/page.tsx",
+        "frontend/app/(dashboard)/campaigns/new/page.tsx",
+        "frontend/components/campaigns/CampaignBuilder.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-6"
+    },
+    {
+      "id": "outreach-personalize",
+      "title": "AI personalization для outreach (LLM, Pro+)",
+      "priority": "P0",
+      "sprint": 4,
+      "status": "planned",
+      "estimated_hours": 6,
+      "depends_on": ["telegram-outreach-mvp"],
+      "blocks": [],
+      "files_touched": [
+        "backend-api/app/integrations/llm/base.py",
+        "backend-api/app/integrations/llm/yandexgpt.py",
+        "backend-api/app/integrations/llm/openai.py",
+        "worker/app/tasks/outreach.py",
+        "backend-api/app/services/llm_cache.py"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-6.3"
+    },
+    {
+      "id": "opt-out-flow",
+      "title": "Public opt-out endpoint with HMAC token",
+      "priority": "P0",
+      "sprint": 4,
+      "status": "planned",
+      "estimated_hours": 3,
+      "depends_on": ["telegram-outreach-mvp"],
+      "blocks": [],
+      "files_touched": [
+        "backend-api/app/routers/optout.py",
+        "backend-api/app/services/opt_out.py",
+        "backend-api/app/models/opt_out.py",
+        "backend-api/app/utils/optout_token.py",
+        "frontend/app/(public)/optout/page.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-8.2"
+    },
+    {
+      "id": "icp-analyzer",
+      "title": "AI ICP analysis (upload CSV → distributions + LLM summary)",
+      "priority": "P0",
+      "sprint": 5,
+      "status": "planned",
+      "estimated_hours": 10,
+      "depends_on": ["billing-plans", "outreach-personalize"],
+      "blocks": ["icp-look-alike"],
+      "files_touched": [
+        "backend-api/app/routers/icp.py",
+        "backend-api/app/services/icp.py",
+        "backend-api/app/models/icp_profile.py",
+        "backend-api/alembic/versions/0007_icp_profiles.py",
+        "worker/app/tasks/icp.py",
+        "frontend/app/(dashboard)/icp/page.tsx",
+        "frontend/components/icp/ICPUploader.tsx",
+        "frontend/components/icp/ICPSummary.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-5"
+    },
+    {
+      "id": "icp-look-alike",
+      "title": "Look-alike suggestions (rule-based для MVP, vector для P2)",
+      "priority": "P0",
+      "sprint": 5,
+      "status": "planned",
+      "estimated_hours": 6,
+      "depends_on": ["icp-analyzer"],
+      "blocks": [],
+      "files_touched": [
+        "backend-api/app/services/icp.py",
+        "frontend/components/icp/LookAlikeList.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-5.3"
+    },
+    {
+      "id": "team-seats",
+      "title": "Team plan: invite/accept/revoke seat members",
+      "priority": "P1",
+      "sprint": 6,
+      "status": "planned",
+      "estimated_hours": 6,
+      "depends_on": ["user-auth", "billing-plans"],
+      "blocks": [],
+      "files_touched": [
+        "backend-api/app/routers/team.py",
+        "backend-api/app/services/team.py",
+        "backend-api/app/models/team_member.py",
+        "frontend/app/(dashboard)/settings/team/page.tsx"
+      ],
+      "completed_at": null,
+      "spec_section": "FR-4.3"
+    },
+    {
+      "id": "monitoring-dashboards",
+      "title": "Grafana dashboards + alerting rules + Loki integration",
+      "priority": "P1",
+      "sprint": 6,
+      "status": "planned",
+      "estimated_hours": 5,
+      "depends_on": [],
+      "blocks": [],
+      "files_touched": [
+        "monitoring/prometheus.yml",
+        "monitoring/grafana/dashboards/apollo-overview.json",
+        "monitoring/grafana/dashboards/apollo-business.json",
+        "monitoring/alertmanager.yml",
+        "backend-api/app/middleware/metrics.py"
+      ],
+      "completed_at": null,
+      "spec_section": "NFR-6"
+    },
+    {
+      "id": "e2e-tests-suite",
+      "title": "Playwright E2E test suite (critical user journeys)",
+      "priority": "P1",
+      "sprint": 6,
+      "status": "planned",
+      "estimated_hours": 8,
+      "depends_on": ["telegram-outreach-mvp", "billing-yookassa"],
+      "blocks": [],
+      "files_touched": [
+        "e2e/tests/register-flow.spec.ts",
+        "e2e/tests/reveal-flow.spec.ts",
+        "e2e/tests/campaign-flow.spec.ts",
+        "e2e/tests/billing-flow.spec.ts",
+        "e2e/playwright.config.ts"
+      ],
+      "completed_at": null,
+      "spec_section": "test-scenarios.md"
+    }
+  ]
+}
