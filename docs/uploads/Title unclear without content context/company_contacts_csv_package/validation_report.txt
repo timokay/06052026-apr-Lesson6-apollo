@@ -1,0 +1,6 @@
+Validation report
+companies.csv rows: 25
+contacts.csv rows: 25
+companies.csv header: ['inn', 'name', 'okved_main', 'region', 'employee_count', 'revenue_range', 'address', 'director']
+contacts.csv header: ['company_inn', 'name', 'title', 'email', 'phone', 'telegram']
+errors: 0

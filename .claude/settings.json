@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/feature-context.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -d myinsights ] && [ -n \"$(git status --porcelain myinsights/ 2>/dev/null)\" ]; then git add myinsights/ && git commit -m 'docs(insights): auto-capture from session' --quiet 2>/dev/null || true; fi"
+          },
+          {
+            "type": "command",
+            "command": "if [ -f .claude/feature-roadmap.json ] && [ -n \"$(git status --porcelain .claude/feature-roadmap.json 2>/dev/null)\" ]; then git add .claude/feature-roadmap.json && git commit -m 'docs(roadmap): auto-update from session' --quiet 2>/dev/null || true; fi"
+          },
+          {
+            "type": "command",
+            "command": "if [ -d docs/plans ] && [ -n \"$(git status --porcelain docs/plans/ 2>/dev/null)\" ]; then git add docs/plans/ && git commit -m 'docs(plans): auto-capture from session' --quiet 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
